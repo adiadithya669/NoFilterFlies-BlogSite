@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4 shadow-sm">
+            <h3 class="card-title mb-3 text-center">Update Profile</h3>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="text" class="form-control mb-2" name="first_name" value="{{ user.first_name }}" required>
+                <input type="text" class="form-control mb-2" name="last_name" value="{{ user.last_name }}" required>
+                <input type="email" class="form-control mb-2" name="email" value="{{ user.email }}" required>
+                <input type="text" class="form-control mb-2" name="contact" value="{{ user.contact_number }}" required pattern="[0-9]{10}">
+                <input type="file" class="form-control mb-2" name="profile_pic">
+                {% if user.profile_pic %}
+                    <img src="{{ user.profile_pic.url }}" class="img-thumbnail mb-2" style="width:100px;">
+                {% endif %}
+                <button type="submit" class="btn btn-primary w-100">Update</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

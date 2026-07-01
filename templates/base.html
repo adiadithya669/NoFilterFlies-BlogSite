@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}No Filter Files{% endblock %}</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style>
+    body { background-color: #f8f9fa; }
+    .navbar { margin-bottom: 20px; }
+    .card { margin-bottom: 20px; }
+    footer {
+        margin-top: 50px;
+        padding: 20px 0;
+        background: #343a40;
+        color: white;
+        text-align: center;
+    }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'homepage' %}">NoFilterFiles</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'blog_create' %}">New Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+
+    {% block content %}
+
+
+    {% if blogs %}
+        <h3 class="mb-4">Latest Posts</h3>
+
+        {% for blog in blogs %}
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <h5 class="card-title">{{ blog.title }}</h5>
+
+                    <small class="text-muted">
+                        By {{ blog.user.username }} |
+                        {{ blog.created_at|date:"d M Y" }}
+                    </small>
+
+                    <p class="card-text mt-2">
+                        {{ blog.content|truncatewords:30 }}
+                    </p>
+
+                    {% if blog.image %}
+                        <img src="{{ blog.image.url }}" class="img-fluid mb-2">
+                    {% endif %}
+
+                    <div>
+                        <a href="{% url 'blog_detail' blog.id %}" class="btn btn-primary btn-sm">
+                            Read More
+                        </a>
+
+                        {% if user == blog.user %}
+                            <form action="{% url 'blog_delete' blog.id %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button class="btn btn-danger btn-sm">
+                                    Delete
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        {% endfor %}
+
+    {% endif %}
+
+    {% endblock %}
+
+</div>
+
+
+<footer>
+    &copy; 2026 BlogSite. All rights reserved.
+</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
